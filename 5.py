@@ -30,11 +30,7 @@ class Solution(object):
             array.append(row)
 
         # Vytvoření # v centru
-        center = (
-            -vector_length
-        )  # center jestli jede jednou tak je na 0,0 proto začíná proměnná na -vector_lenght
-        for i in range(list_of_sizes[-1]):
-            center += vector_length
+        center = (size-1)//2
         array[center][center] = "# "  # určíš souřadnicemi kde je # (y, x)
 
         # v defaultu to je [[2,2], [2,-2], [-2,2], [-2,-2]]
@@ -49,10 +45,10 @@ class Solution(object):
             tuple(corner) for corner in list_of_centers
         )  # toto je list souřadnic které jsem navštívil, set je speciální druh listu, kde nejsou duplikáty a je neměný, využívá se při hledání
 
-        for _ in list_of_sizes:
+        for _ in range((len(list_of_sizes) - 1)):
             new_list_of_centers = []  # list nových středů
 
-            # Tato smička mi veme střed a udělá z něho petern, co je třeba na kostce, když ukazuje 5 (zduplikování symbolů do rohů)
+            # Tato smička mi veme střed a udělá z něho petern, co je třeba na kostce, když uka  zuje 5 (zduplikování symbolů do rohů)
             for cord in list_of_centers:
                 x = cord[0]  # nastavení bodu x
                 y = cord[1]  # nastavení bodu y
@@ -86,7 +82,7 @@ class Solution(object):
             [size, size - 1],
         ]
 
-        for _ in list_of_sizes:
+        for _ in range((len(list_of_sizes) - 1)):
             # znovu si vytvoříme pole nových rohů
             new_list_of_corners = []
 
