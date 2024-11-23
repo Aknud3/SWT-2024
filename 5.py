@@ -10,7 +10,7 @@ class Solution(object):
         """
 
         number_of_rectangles = kwargs.get("počet_čtverců", 1)
-        vector_length = kwargs.get("mezera_mezi_čtverci", 1)
+        vector_length = (kwargs.get("mezera_mezi_čtverci", 1) + 1)
 
         array = []  # hlavní pole ve kterém se vše děje
         list_of_sizes = []  # pole se všemi velikosti čtverců (používá se pro for loopy)
@@ -165,7 +165,7 @@ class Solution(object):
 
 # Vytvoření 2 objektů solution a každá zavolá jinou funkci
 Solution().generate_n_rectangles_complicated(
-    počet_čtverců=3, mezera_mezi_čtverci=2
+    počet_čtverců=3, mezera_mezi_čtverci=1
 )  # bere si funkce 2 argumenty počet čtverců který chceme vytvořit a mezeru mezi čtverci
 print()
 Solution().generate_n_rectangles_short(3)
