@@ -1,12 +1,16 @@
 class Solution(object):
     """Vytvořím si objekt, který bude mít 2 funkce. Objekt se jmenuje Solution(řešení), a řešení má 2 možnosti, buď complicated nebo short"""
 
-    # do funkce vložíme počet čtverců a velikost vektoru o jaký to chceme posouvat
-    def generate_n_rectangles_complicated(self, number_of_rectangles, vector_length):
+    # Funkce bere 2 argumenty, počet čtverců co chceme a velikost vektoru o který posouváme
+    # kwargs je keywords arguments a používá se to pro lepší orientaci
+    def generate_n_rectangles_complicated(self, **kwargs):
         """Tohle je funkce, která je náročná. Nejprve udělá prázdné pole plné '  ', potom do středu dá # poté pomocí vektorů tyto # duplikuje
         i do rohů dalšího čtverce a pokračuje dokuď není v poslední vrstvě.
         Potom se spojí rohy čárou a vektorem se znovu posunou, ale teď do menšího čtverce.
         """
+
+        number_of_rectangles = kwargs.get("počet_čtverců", 1)
+        vector_length = kwargs.get("mezera_mezi_čtverci", 1)
 
         array = []  # hlavní pole ve kterém se vše děje
         list_of_sizes = []  # pole se všemi velikosti čtverců (používá se pro for loopy)
@@ -18,8 +22,7 @@ class Solution(object):
             )  # Python počítá od 0, tak tam potřebuju + 1, protože moje čtverce začínají od velikosti 1
 
         # Velikost finálního pole
-        # 1 = 1, 2 = 5, 3 = 9, 4 = 13, ...
-        size = 1 + ((number_of_rectangles - 1) * 4)
+        size = 1 + ((number_of_rectangles - 1) * vector_length * 2)
 
         # Vytvoření 2D pole, které má délku a výšku jako size a dá se tam '  '
         for row in range(size):
@@ -28,10 +31,10 @@ class Solution(object):
 
         # Vytvoření # v centru
         center = (
-            -2
-        )  # center jestli jede jednou tak je na 0,0 proto začíná proměnná na -2
+            -vector_length
+        )  # center jestli jede jednou tak je na 0,0 proto začíná proměnná na -vector_lenght
         for i in range(list_of_sizes[-1]):
-            center += 2
+            center += vector_length
         array[center][center] = "# "  # určíš souřadnicemi kde je # (y, x)
 
         # v defaultu to je [[2,2], [2,-2], [-2,2], [-2,-2]]
@@ -73,7 +76,7 @@ class Solution(object):
                         )  # Uložíme si souřadnice do nových corners, protože tato funkce poběží i pro tyto vytvořené body
                         visited.add((nx, ny))  # Uložíme si bod i do navštívených bodů
                     list_of_centers = new_list_of_centers  # Změníme si list_of_centers na nový a smyčka jede tolikrát kolik máme čtverců
-            # Tato funkce nám udělala šachovnici s '# ' nebo '  ', která má ale mezery 2 (je to extrémně překoplikované řešení)
+            # Tato funkce nám udělala šachovnici s '# ' nebo '  ', můžeme si rozhodnout vše o ní, velikost a i velikost mezi mezerami
 
         # vytvoříme si list souřadnic, kde jsou všechny rohy pole array
         list_of_corners = [
@@ -165,9 +168,9 @@ class Solution(object):
 
 
 # Vytvoření 2 objektů solution a každá zavolá jinou funkci
-
-
-Solution().generate_n_rectangles_complicated(3, 2)
+Solution().generate_n_rectangles_complicated(
+    počet_čtverců=3, mezera_mezi_čtverci=2
+)  # bere si funkce 2 argumenty počet čtverců který chceme vytvořit a mezeru mezi čtverci
 print()
 Solution().generate_n_rectangles_short(3)
 
