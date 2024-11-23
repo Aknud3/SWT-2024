@@ -1,78 +1,148 @@
 class Solution(object):
+    """Vytvořím si objekt, který bude mít 2 funkce. Objekt se jmenuje Solution(řešení), a řešení má 2 možnosti, buď complicated nebo short"""
 
-    def generate_n_rectangles(self, number_of_rectangles):
-        array = []
-        list_of_sizes = []
+    def generate_n_rectangles_complicated(self, number_of_rectangles):
+        """Tohle je funkce, která je náročná. Nejprve udělá prázdné pole plné '  ', potom do středu dá # poté pomocí vektorů tyto # duplikuje
+        i do rohů dalšího čtverce a pokračuje dokuď není v poslední vrstvě. 
+        Potom se spojí rohy čárou a vektorem se znovu posunou, ale teď do menšího čtverce."""
+        
+        array = [] # hlavní pole ve kterém se vše děje
+        list_of_sizes = [] # pole se všemi velikosti čtverců (používá se pro for loopy)
 
+        
+        # Tento loop přidá do list_of_sizes všechny velikosti
         for i in range(number_of_rectangles):
-            j = i + 1
-            list_of_sizes.append(j)
+            list_of_sizes.append(i+1) # Python počítá od 0, tak tam potřebuju + 1, protože moje čtverce začínají od velikosti 1
 
-        size_of_final_print = 1 + ((list_of_sizes[-1] - 1) * 4)
+        # Velikost finálního pole
+        # 1 = 1, 2 = 5, 3 = 9, 4 = 13, ...
+        size = 1 + ((number_of_rectangles - 1) * 4)
 
-        for row in range(size_of_final_print):
-            row = ["  " for _ in range(size_of_final_print)]
+        # Vytvoření 2D pole, které má délku a výšku jako size a dá se tam '  '
+        for row in range(size):
+            row = ["  " for _ in range(size)]
             array.append(row)
 
-        center = -2
+        # Vytvoření # v centru
+        center = -2 # center jestli jede jednou tak je na 0,0 proto začíná proměnná na -2
         for i in range(list_of_sizes[-1]):
             center += 2
-        array[center][center] = "# "
+        array[center][center] = "# " # určíš souřadnicemi kde je # (y, x)
 
-        vectors = [[2, 2], [2, -2], [-2, 2], [-2, -2]]
-        list_of_centers = [[center, center]]
-        visited = set(tuple(corner) for corner in list_of_centers)
+        vectors = [[2, 2], [2, -2], [-2, 2], [-2, -2]] # určím si vektory které budu používat pro posun
+        list_of_centers = [[center, center]] # list souřadnic se kterým chci pracovat
+        visited = set(tuple(corner) for corner in list_of_centers) # toto je list souřadnic které jsem navštívil, set je speciální druh listu, kde nejsou duplikáty a je neměný, využívá se při hledání
 
+        
+        
         for _ in list_of_sizes:
-            new_list_of_centers = []
+            new_list_of_centers = [] # list nových středů
+            
+            # Tato smička mi veme střed a udělá z něho petern, co je třeba na kostce, když ukazuje 5 (zduplikování symbolů do rohů)
             for cord in list_of_centers:
-                x = cord[0]
-                y = cord[1]
+                x = cord[0] # nastavení bodu x
+                y = cord[1] # nastavení bodu y
+                
+                # Toto jede pro každý vektor ve vektorech 
                 for vector in vectors:
-                    dx, dy = vector
-                    nx, ny = x + dx, y + dy
+                    dx, dy = vector # Pro vektor [2, 2] je dx 2 a dy 2, pro vektor [2, -2] to bude dx 2 a dy -2
+                    nx, ny = x + dx, y + dy # Tohle udělá nx a ny což je součet souřadnice cord[0] a cord[1] a to se akorát sečte s vektorem, který jsme si vytvořili o řádek nahoře
+                    
+                    # Podmínka, co jenom hlídá jestli nikde nepřesahujeme a už jsme nenavštívili ten bod
                     if (
-                        0 <= nx < size_of_final_print
-                        and 0 <= ny < size_of_final_print
+                        0 <= nx < size
+                        and 0 <= ny < size
                         and (nx, ny) not in visited
                     ):
+                        # Jestli vše splňujeme na souřadnice nx a ny se hodí #
                         array[nx][ny] = "# "
-                        new_list_of_centers.append([nx, ny])
-                        visited.add((nx, ny))
-                    list_of_centers = new_list_of_centers
-
+                        new_list_of_centers.append([nx, ny]) # Uložíme si souřadnice do nových corners, protože tato funkce poběží i pro tyto vytvořené body
+                        visited.add((nx, ny)) # Uložíme si bod i do navštívených bodů
+                    list_of_centers = new_list_of_centers # Změníme si list_of_centers na nový a smyčka jede tolikrát kolik máme čtverců
+            # Tato funkce nám udělala šachovnici s '# ' nebo '  ', která má ale mezery 2 (je to extrémně překoplikované řešení)
+        
+        # vytvoříme si list souřadnic, kde jsou všechny rohy pole array      
         list_of_corners = [
             [0, 0],
-            [0, size_of_final_print - 1],
-            [size_of_final_print - 1, 0],
-            [size_of_final_print, size_of_final_print - 1],
+            [0, size - 1],
+            [size - 1, 0],
+            [size, size - 1],
         ]
 
+        
         for _ in list_of_sizes:
+            # znovu si vytvoříme pole nových rohů
             new_list_of_corners = []
 
+            #  deklarujeme si, co je horní levý, horní pravý etc. roh aby se nám kód lépe psal (topleft = 0,0, topright = 0, size-1 etc.)
             top_left, top_right, bottom_left, bottom_right = list_of_corners
 
+            # pro každé x v poli horní levý a horní pravý x + 1 dáme #
+            # Tohle jen že zadáme 2 souřadnice a podle osy x nám to nakreslí rovnou čáru '# ' 
             for x in range(top_left[1], top_right[1] + 1):
                 array[top_left[0]][x] = "# "
+                
+            # Tohle je to stejné akorát pro spodní rohy    
             for x in range(bottom_left[1], bottom_right[1] + 1):
                 array[bottom_left[0]][x] = "# "
+                
+            # Toto je to stejné ale místo osy x to je pro osu y
+            # Toto kreslí levou stěnu
             for y in range(top_left[0], bottom_left[0]):
                 array[y][top_left[1]] = "# "
+                
+            # Toto kreslí pravou stěnu
             for y in range(top_right[0], bottom_right[0]):
                 array[y][top_right[1]] = "# "
 
+            # Teď si pouze všechny rohy posunu o 2 do středu, zase pomocí vektoru (je to napsané jinak, ale je to stále vektor)
             new_list_of_corners.append([top_left[0] + 2, top_left[1] + 2])
             new_list_of_corners.append([top_right[0] + 2, top_right[1] - 2])
             new_list_of_corners.append([bottom_left[0] - 2, bottom_left[1] + 2])
             new_list_of_corners.append([bottom_right[0] - 2, bottom_right[1] - 2])
 
+            # Změníme list rohů
             list_of_corners = new_list_of_corners
+        # Tato smyčka jede zase podle toho kolik máme čtverců a z šachovnice udělá finální výtvor
+        
+        # Celé pole vytiskneme
+        for row in array: # pro linku v poli
+            for char in row: # pro symbol v lince
+                print(char, end="") # tisk symbolu buď '# ' nebo '  '
+            print("") # odřádkování
 
-        for row in array:
-            for char in row:
-                print(char, end="")
-            print("")
+    def generate_n_rectangles_short(self, number_of_rectangles):
+        # Toto není moje řešení, ale napadlo to člena soutěže TdA
+        size = 1 + ((number_of_rectangles - 1) * 4) # nastavení velikosti celkového pole
+
+        for y in range(size): # pro y v size (v pythnu jak jsme už psal nahoře se první bere osa Y, protože když máme 2 rozměrné pole, tak máme 2 závorky [0][0] s dvěmi indexy a první
+            # první ukazuje v jakém subpoli se pohybujeme a druhé ukazuje v jakém prvku toho sub pole jsme, takže jestli máme tohle:
+            # [
+            # ['a', 'b', 'c'],
+            # ['1', '2', '3'],
+            # ['z', 'x', 'y']
+            # ]
+            # tak to je jedno velké pole kde jsou 3 malá pole, první nám ukazuje v jakém poli se pohybujeme pole[0] = pismenka, pole[1] = čísla, pole[2] = souřadnice a teprve druhá nám
+            # ukazuje kde v tom druhém poli jsme pole[0][0] = a, pole[2][2] = y
+            
+            # Takže ta smička nahoře jede pro velká pole a tohle pro každý ten jednotlivý prvek
+            for x in range(size):
+                # Toto je if vložené do funcke a říká to: vytiskni # pokud minimální hodnota z x,y size-x-1, size-y-1 je dělitelná 2 beze zbytku, jinak vytiskni '  '
+                # Vlastně to funguje na tom, že čtverec je vždy v sudé vrstvě 0, 2, 4 etc. Takže se to jen podívá kde je to nejblíže k nějakému rohu min(x, y, size - x - 1, size - y - 1)
+                # A jestli ta hodnota je dělitelná 2 tak tam je '# '
+                print(
+                    "# " if min(x, y, size - x - 1, size - y - 1) % 2 == 0 else "  ",
+                    end="",
+                )
+            # Odřádkování
+            print()
 
 
-Solution().generate_n_rectangles(3)
+# Vytvoření 2 objektů solution a každá zavolá jinou funkci
+
+Solution().generate_n_rectangles_complicated(6)
+print()
+Solution().generate_n_rectangles_short(6)
+
+# Snad tento komentář někomu pomohl pochopit python lépe. Moje řešení tohoto problému nebylo nejlepší, co se týče jednoduchosti, ale k výsledku jsem se dostal.
+# Druhé řešení považuji za správné, jen mě to prostě nenapadlo. Creator: Víťa aka sprtokiller
