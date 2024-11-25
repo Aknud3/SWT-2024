@@ -3,7 +3,7 @@ class Solution(object):
 
     # Funkce bere 2 argumenty, počet čtverců co chceme a velikost vektoru o který posouváme
     # kwargs je keywords arguments a používá se to pro lepší orientaci
-    def generate_n_rectangles_complicated(self, **kwargs):
+    def generate_n_rectangles_complicated_coments(self, **kwargs):
         """Tohle je funkce, která je náročná. Nejprve udělá prázdné pole plné '  ', potom do středu dá # poté pomocí vektorů tyto # duplikuje
         i do rohů dalšího čtverce a pokračuje dokuď není v poslední vrstvě.
         Potom se spojí rohy čárou a vektorem se znovu posunou, ale teď do menšího čtverce.
@@ -33,6 +33,8 @@ class Solution(object):
         center = (size-1)//2
         array[center][center] = "# "  # určíš souřadnicemi kde je # (y, x)
 
+
+        # Nepotřebná část kódu
         # v defaultu to je [[2,2], [2,-2], [-2,2], [-2,-2]]
         vectors = [
             [vector_length, vector_length],
@@ -130,7 +132,7 @@ class Solution(object):
             for char in row:  # pro symbol v lince
                 print(char, end="")  # tisk symbolu buď '# ' nebo '  '
             print("")  # odřádkování
-
+    
     # do funkce vložíme jenom celkový počet čtverců
     def generate_n_rectangles_short(self, number_of_rectangles):
         # Toto není moje řešení, ale napadlo to člena soutěže TdA
@@ -161,7 +163,52 @@ class Solution(object):
                 )
             # Odřádkování
             print()
+    def generate_n_rectangles(self, number_of_rectangles, vector_lenght):
+        list_of_sizes = [i+1 for i in number_of_rectangles]
+        array = [["  " for i in range(number_of_recntangles] for j in number_of_rectangles]
+        center = (size-1)//2
+        array[center][center] = "# " 
+        list_of_corners = [
+            [0, 0],
+            [0, size - 1],
+            [size - 1, 0],
+            [size, size - 1],
+        ]
+        for _ in range((len(list_of_sizes) - 1)):
+            new_list_of_corners = []
+            top_left, top_right, bottom_left, bottom_right = list_of_corners
 
+            for x in range(top_left[1], top_right[1] + 1):
+                array[top_left[0]][x] = "# "
+                
+            for x in range(bottom_left[1], bottom_right[1] + 1):
+                array[bottom_left[0]][x] = "# "
+
+            for y in range(top_left[0], bottom_left[0]):
+                array[y][top_left[1]] = "# "
+
+            for y in range(top_right[0], bottom_right[0]):
+                array[y][top_right[1]] = "# "
+
+            new_list_of_corners.append(
+                [top_left[0] + vector_length, top_left[1] + vector_length]
+            )
+            new_list_of_corners.append(
+                [top_right[0] + vector_length, top_right[1] - vector_length]
+            )
+            new_list_of_corners.append(
+                [bottom_left[0] - vector_length, bottom_left[1] + vector_length]
+            )
+            new_list_of_corners.append(
+                [bottom_right[0] - vector_length, bottom_right[1] - vector_length]
+            )
+
+            list_of_corners = new_list_of_corners
+
+        for row in array:  # pro linku v poli
+            for char in row:  # pro symbol v lince
+                print(char, end="")  # tisk symbolu buď '# ' nebo '  '
+            print("")  # odřádkován
 
 # Vytvoření 2 objektů solution a každá zavolá jinou funkci
 Solution().generate_n_rectangles_complicated(
