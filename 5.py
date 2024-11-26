@@ -163,33 +163,44 @@ class Solution(object):
                 )
             # Odřádkování
             print()
-    def generate_n_rectangles(self, number_of_rectangles, vector_lenght):
-        list_of_sizes = [i+1 for i in number_of_rectangles]
-        array = [["  " for i in range(number_of_recntangles] for j in number_of_rectangles]
-        center = (size-1)//2
-        array[center][center] = "# " 
+   def generate_n_rectangles(number_of_rectangles, vector_length):
+       # Toto je verze bez komentářů, která je optimalizovaná
+
+        array = []
+    
+        list_of_sizes = [i + 1 for i in range(number_of_rectangles)]
+    
+        size = 1 + ((number_of_rectangles - 1) * vector_length * 2)
+    
+        array = [["  " for _ in range(size)] for _ in range(size)]
+    
+        center = (size - 1) // 2
+        array[center][center] = "# "
+    
         list_of_corners = [
             [0, 0],
             [0, size - 1],
             [size - 1, 0],
             [size, size - 1],
         ]
+    
         for _ in range((len(list_of_sizes) - 1)):
             new_list_of_corners = []
+    
             top_left, top_right, bottom_left, bottom_right = list_of_corners
-
+    
             for x in range(top_left[1], top_right[1] + 1):
                 array[top_left[0]][x] = "# "
-                
+    
             for x in range(bottom_left[1], bottom_right[1] + 1):
                 array[bottom_left[0]][x] = "# "
-
+    
             for y in range(top_left[0], bottom_left[0]):
                 array[y][top_left[1]] = "# "
-
+    
             for y in range(top_right[0], bottom_right[0]):
                 array[y][top_right[1]] = "# "
-
+    
             new_list_of_corners.append(
                 [top_left[0] + vector_length, top_left[1] + vector_length]
             )
@@ -202,13 +213,15 @@ class Solution(object):
             new_list_of_corners.append(
                 [bottom_right[0] - vector_length, bottom_right[1] - vector_length]
             )
-
+    
             list_of_corners = new_list_of_corners
+    
+        for row in array:
+            print("".join(row))
 
-        for row in array:  # pro linku v poli
-            for char in row:  # pro symbol v lince
-                print(char, end="")  # tisk symbolu buď '# ' nebo '  '
-            print("")  # odřádkován
+
+generate_n_rectangles(5, 1)
+
 
 # Vytvoření 2 objektů solution a každá zavolá jinou funkci
 Solution().generate_n_rectangles_complicated(
